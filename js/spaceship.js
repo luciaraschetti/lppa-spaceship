@@ -7,6 +7,7 @@ var scenes = [];
 var canvas = null;
 var context = null;
 var pause = true;
+var gameOver = true;
 var pressing = [];
 var lastPress = null;
 var ship = null;
@@ -130,6 +131,7 @@ game.load = function() {
     enemies.length = 0;
     enemies.push(new Rectangle(10,0,10,10));
     pause = true;
+    gameOver = false;
 }
 
 game.act = function() {
@@ -139,6 +141,8 @@ game.act = function() {
         lastPress = null;
     }
     if(!pause){
+        //reset game
+        if(gameOver) {game.load();}
         //horizontal movement
         if(pressing[keyRight]) {ship.x += 10;}
         if(pressing[keyLeft]) {ship.x -= 10;}
@@ -167,6 +171,7 @@ game.act = function() {
             }
             //player-enemy intersection
             if(ship.intersects(enemies[i])) {
+                gameOver = true;
                 pause = true;
             }
             //shot-enemy intersection
@@ -205,7 +210,11 @@ game.paint = function(context) {
 
     if(pause) {
         context.textAlign = 'center';
-        context.fillText('Pause', 150, 20);
+        if(gameOver) {
+            context.fillText('Game Over', 150, 75);
+        } else {
+            context.fillText('Pause', 150, 20);
+        }
     }
 }
 
