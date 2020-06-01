@@ -7,6 +7,39 @@ var scenes = [];
 var canvas = null;
 var context = null;
 var pressing = [];
+var lastPress = null;
+var ship = null;
+var shipImage = new Image();
+var keyLeft = 37;
+var keyUp = 38;
+var keyRight = 39;
+var keyDown = 40;
+var keyEnter = 13;
+var keySpace = 32;
+
+var Rectangle = function(x, y, width, height) { //rectangle obj 
+    this.x = (x === undefined) ? 0 : x;
+    this.y = (y === undefined) ? 0 : y;
+    this.width = (width === undefined) ? 0 : width;
+    this.height = (height === undefined) ? this.width : height;
+
+    this.fill = function(context) {
+        if(context === undefined) {
+            window.console.warn('Missing parameters on function fill');
+        } else {
+            context.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+}
+
+document.addEventListener('keydown', function(evt) {
+    lastPress = evt.keyCode;
+    pressing[evt.keyCode] = true;
+}, false);
+
+document.addEventListener('keyup', function(evt) {
+    pressing[evt.keyCode] = false;
+}, false);
 
 var scene = function() {
     this.id = scenes.length;
@@ -51,9 +84,36 @@ menu.paint = function(context) {
     context.fillText('Press Enter', 150, 90);
 };
 
+menu.act = function() {
+    if(lastPress === keyEnter) {
+        loadScene(game);
+        lastPress = null;
+    }
+};
+
+game = new scene();
+
+game.act = function() {
+    //horizontal movement
+    if(pressing[keyRight]) ship.x += 10;
+    if(pressing[keyLeft]) ship.x -= 10;
+    //canvas limits
+    if(ship.x > canvas.width - ship.width) ship.x = canvas.width - ship.width;
+    if(ship.x < 0) ship.x = 0;
+}
+
+game.paint = function(context) {
+    context.fillStyle = '#201827';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.drawImage(shipImage, ship.x, ship.y);
+}
+
 window.onload = function() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
+    ship = new Rectangle(145, 130, 16, 15);
+    shipImage.src = 'assets/ship.png';
     run();
     repaint();
 }
