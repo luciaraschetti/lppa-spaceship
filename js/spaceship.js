@@ -10,6 +10,8 @@ var pressing = [];
 var lastPress = null;
 var ship = null;
 var shipImage = new Image();
+var shots = [];
+var shotImage = new Image();
 var keyLeft = 37;
 var keyUp = 38;
 var keyRight = 39;
@@ -95,11 +97,24 @@ game = new scene();
 
 game.act = function() {
     //horizontal movement
-    if(pressing[keyRight]) ship.x += 10;
-    if(pressing[keyLeft]) ship.x -= 10;
+    if(pressing[keyRight]) {ship.x += 10;}
+    if(pressing[keyLeft]) {ship.x -= 10;}
     //canvas limits
-    if(ship.x > canvas.width - ship.width) ship.x = canvas.width - ship.width;
-    if(ship.x < 0) ship.x = 0;
+    if(ship.x > canvas.width - ship.width) {ship.x = canvas.width - ship.width;}
+    if(ship.x < 0) {ship.x = 0;}
+    //space -> adds new 'shot' to array
+    if(lastPress === keySpace) {
+        shots.push(new Rectangle(ship.x + 3, ship.y, 5, 5));
+        lastPress = null;
+    }
+    //shots movement & removal when hitting the top of the canvas
+    for(var i = 0, l = shots.length; i < l; i++) {
+        shots[i].y -= 10;
+        if(shots[i].y < 0) {
+            shots.splice(i--, 1);
+            l--;
+        }
+    }
 }
 
 game.paint = function(context) {
@@ -107,6 +122,10 @@ game.paint = function(context) {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     context.drawImage(shipImage, ship.x, ship.y);
+
+    for(var i = 0; i < shots.length; i++) {
+        context.drawImage(shotImage, shots[i].x, shots[i].y);
+    }
 }
 
 window.onload = function() {
@@ -114,6 +133,7 @@ window.onload = function() {
     context = canvas.getContext('2d');
     ship = new Rectangle(145, 130, 16, 15);
     shipImage.src = 'assets/ship.png';
+    shotImage.src = 'assets/shot.png';
     run();
     repaint();
 }
