@@ -1,0 +1,75 @@
+body {
+    font-family: 'Bowlby One SC', sans-serif;
+    background-color: #111216;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    min-height: 100vh;
+    text-align: center;
+}
+
+h1 {
+    font-size: 4rem;
+    margin: 35px 0 100px 0;
+    color: #ff00006c;
+    text-shadow: 3px 3px 0px #0000ff88;
+}
+
+h2 {
+    font-size: 3rem;
+    color: #ff00006c;
+    text-shadow: 3px 3px 0px #0000ff88;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+}
+
+#canvas {
+    height: 320px;
+    max-width: 100%;
+    margin: 30px 0 20px 0;
+    border-radius: 18px;
+    background-color: #201827;
+}
+
+#awards {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25px;
+    background-color: #7105547e;
+    border: 2px solid #ff00806c;;
+}
+
+#awards ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#awards ul li {
+    margin: 5px 0;
+    padding: 10px 30px;
+    color: #ffffffb2;
+}
+
+.emoji {
+    display: none;
+    margin: 5px 0;
+    padding: 10px 30px;
+}
