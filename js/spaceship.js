@@ -1,5 +1,8 @@
 'use strict'
+
 var score = 0;
+var points = null;
+var emojis = null;
 var game = null;
 var menu = null;
 var currentScene = 0;
@@ -184,6 +187,13 @@ game.act = function() {
                     enemies.push(new Rectangle(random(canvas.width / 10) * 10, 0, 10, 10));
                     shots.splice(j--,1);
                     sl--;
+                    //scoreboard
+                    for(var i = 0; i < points.length; i++) {
+                        if(score == points[i].innerHTML) {
+                            points[i].setAttribute('style', 'display: none');
+                            emojis[i].setAttribute('style', 'display: inline');
+                        }
+                    }
                 }
             }
         }
@@ -221,6 +231,8 @@ game.paint = function(context) {
 window.onload = function() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
+    points = document.getElementsByClassName('points');
+    emojis = document.getElementsByClassName('emoji');
     shipImage.src = 'assets/ship.png';
     shotImage.src = 'assets/shot.png';
     enemyImage.src = 'assets/enemy.png';
