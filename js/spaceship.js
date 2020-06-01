@@ -14,6 +14,7 @@ var ship = null;
 var shipImage = new Image();
 var shots = [];
 var shotImage = new Image();
+var enemyImage = new Image();
 var enemies = [];
 var keyLeft = 37;
 var keyUp = 38;
@@ -195,9 +196,8 @@ game.paint = function(context) {
 
     context.drawImage(shipImage, ship.x, ship.y);
 
-    context.fillStyle='#000';
-    for(var i=0,l=enemies.length;i<l;i++) {
-        enemies[i].fill(context);
+    for(var i = 0; i < enemies.length; i++) {
+        context.drawImage(enemyImage, enemies[i].x, enemies[i].y);
     }
 
     for(var i = 0; i < shots.length; i++) {
@@ -223,6 +223,7 @@ window.onload = function() {
     context = canvas.getContext('2d');
     shipImage.src = 'assets/ship.png';
     shotImage.src = 'assets/shot.png';
+    enemyImage.src = 'assets/enemy.png';
     run();
     repaint();
 }
