@@ -1,5 +1,5 @@
 'use strict'
-
+var score = 0;
 var game = null;
 var menu = null;
 var currentScene = 0;
@@ -124,6 +124,7 @@ menu.act = function() {
 game = new scene();
 
 game.load = function() {
+    score = 0;
     ship = new Rectangle(145, 130, 16, 15);
     shots.length = 0;
     enemies.length = 0;
@@ -168,8 +169,18 @@ game.act = function() {
             if(ship.intersects(enemies[i])) {
                 pause = true;
             }
+            //shot-enemy intersection
+            for(var j = 0, sl = shots.length; j < sl; j++) {
+                if(shots[j].intersects(enemies[i])) {
+                    score++;
+                    enemies[i].x = random(canvas.width / 10) * 10;
+                    enemies[i].y = 0;
+                    enemies.push(new Rectangle(random(canvas.width / 10) * 10, 0, 10, 10));
+                    shots.splice(j--,1);
+                    sl--;
+                }
+            }
         }
-    
     }
 }
 
@@ -180,15 +191,20 @@ game.paint = function(context) {
     context.drawImage(shipImage, ship.x, ship.y);
 
     context.fillStyle='#000';
-    for(var i=0,l=enemies.length;i<l;i++)
-    enemies[i].fill(context);
+    for(var i=0,l=enemies.length;i<l;i++) {
+        enemies[i].fill(context);
+    }
 
     for(var i = 0; i < shots.length; i++) {
         context.drawImage(shotImage, shots[i].x, shots[i].y);
     }
 
+    context.fillStyle = '#ff0080a1';
+    context.textAlign = 'left';
+    context.fillText('Score : ' + score, 5, 20);
+
     if(pause) {
-        context.fillStyle = '#ff0080a1';
+        context.textAlign = 'center';
         context.fillText('Pause', 150, 20);
     }
 }
