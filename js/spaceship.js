@@ -1,6 +1,7 @@
 'use strict'
 
 var score = 0;
+var difficulty = 6;
 var points = null;
 var emojis = null;
 var game = null;
@@ -130,10 +131,11 @@ game = new scene();
 
 game.load = function() {
     score = 0;
+    difficulty = 6;
     ship = new Rectangle(145, 130, 16, 15);
     shots.length = 0;
     enemies.length = 0;
-    enemies.push(new Rectangle(10,0,10,10));
+    enemies.push(new Rectangle((random(canvas.width / 10) * 10), 0 ,10,10));
     pause = true;
     gameOver = false;
 }
@@ -184,7 +186,9 @@ game.act = function() {
                     score++;
                     enemies[i].x = random(canvas.width / 10) * 10;
                     enemies[i].y = 0;
-                    enemies.push(new Rectangle(random(canvas.width / 10) * 10, 0, 10, 10));
+                    while(enemies.length < difficulty) {
+                        enemies.push(new Rectangle(random(canvas.width / 10) * 10, 0, 10, 10));
+                    }
                     shots.splice(j--,1);
                     sl--;
                     //scoreboard
@@ -192,6 +196,7 @@ game.act = function() {
                         if(score == points[i].innerHTML) {
                             points[i].setAttribute('style', 'display: none');
                             emojis[i].setAttribute('style', 'display: inline');
+                            difficulty++;
                         }
                     }
                 }
