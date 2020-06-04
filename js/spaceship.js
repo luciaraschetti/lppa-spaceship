@@ -239,7 +239,7 @@ game.paint = function(context) {
     if(pause) {
         context.textAlign = 'center';
         if(gameOver) {
-            context.fillText('Game Over', 150, 75);
+            context.fillText('Game Over (Press Enter)', 150, 75);
         } else {
             context.fillText('Pause', 150, 20);
         }
@@ -260,10 +260,15 @@ gameMode.load = function() {
     enemies.length = 0;
     enemies.push(new Rectangle((random(canvas.width / 10) * 10), 0 ,10,10));
     gameOver = false;
-    pause = false;
+    pause = true;
 }
 
 gameMode.act = function() {
+    //pause
+    if(lastPress === keyEnter) {
+        pause =! pause;
+        lastPress = null;
+    }
     if(!pause){
         //reset game
         if(gameOver) {
@@ -308,6 +313,7 @@ gameMode.act = function() {
             //player-enemy intersection
             if(ship.intersects(enemies[i])) {
                 gameOver = true;
+                pause = true;
             }
             //enemy spawn
             while(enemies.length < difficulty) {
@@ -334,7 +340,7 @@ gameMode.paint = function(context) {
     if(pause) {
         context.textAlign = 'center';
         if(gameOver) {
-            context.fillText('Game Over', 150, 75);
+            context.fillText('Game Over (Press Enter)', 150, 75);
         } else {
             context.fillText('Pause', 150, 20);
         }
