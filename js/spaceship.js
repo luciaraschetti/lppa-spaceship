@@ -4,7 +4,9 @@ var score = 0;
 var difficulty = 6;
 var points = null;
 var emojis = null;
+var txtSpeed = null;
 var game = null;
+var gameMode = null;
 var menu = null;
 var currentScene = 0;
 var scenes = [];
@@ -26,6 +28,7 @@ var keyRight = 39;
 var keyDown = 40;
 var keyEnter = 13;
 var keySpace = 32;
+var keyX = 88;
 
 var random = function(max) {
     return ~~(Math.random() * max);
@@ -115,14 +118,24 @@ menu.paint = function(context) {
     
     context.fillStyle = '#ff0080a1';
     context.textAlign = 'center';
-    context.fillText('SPACESHIP GAME', 150, 60);
-    context.fillText('Use space & arrow keys to play', 150, 90);
-    context.fillText('Press Enter', 150, 120);
+    context.fillText('SPACESHIP GAME', 150, 45);
+    context.fillText('Press Enter -> Normal Mode', 150, 75);
+    context.fillText('Press X -> No ammo, dodge!', 150, 105);
 };
 
 menu.act = function() {
     if(lastPress === keyEnter) {
         loadScene(game);
+        lastPress = null;
+    }
+    if(lastPress === keyX) {
+        txtSpeed.setAttribute('style', 'display: inline');
+        points[0].innerHTML = 'Normal';
+        points[1].innerHTML = 'Fast';
+        points[2].innerHTML = 'Faster';
+        points[3].innerHTML = 'Super Fast';
+        points[4].innerHTML = '!!!!!';
+        loadScene(gameMode);
         lastPress = null;
     }
 };
@@ -233,11 +246,108 @@ game.paint = function(context) {
     }
 }
 
+
+gameMode = new scene();
+
+gameMode.load = function() {
+    score = 0;
+    difficulty = 5;
+    points[0].setAttribute('style', 'color: violet');
+    for(var i = 1; i < points.length; i ++) {
+        points[i].setAttribute('style', 'color: #ffffffb2');
+    }
+    ship = new Rectangle(145, 130, 16, 15);
+    enemies.length = 0;
+    enemies.push(new Rectangle((random(canvas.width / 10) * 10), 0 ,10,10));
+    gameOver = false;
+    pause = false;
+}
+
+gameMode.act = function() {
+    if(!pause){
+        //reset game
+        if(gameOver) {
+            gameMode.load();
+        }
+        //horizontal movement
+        if(pressing[keyRight]) {ship.x += 10;}
+        if(pressing[keyLeft]) {ship.x -= 10;}
+        //canvas limits
+        if(ship.x > canvas.width - ship.width) {ship.x = canvas.width - ship.width;}
+        if(ship.x < 0) {ship.x = 0;}
+        //enemies movement
+        for(var i = 0; i < enemies.length; i++) {
+            var speed = random(10);
+            //change scoreboard & enemy speed depending on score
+            if(score > 8) {
+                speed = random(15);
+                points[1].setAttribute('style', 'color: violet');
+            }
+            if(score > 25) {
+                speed = random(18);
+                points[2].setAttribute('style', 'color: violet');
+            }
+            if(score > 40) {
+                speed = random(20);
+                points[3].setAttribute('style', 'color: violet');
+            }
+            if(score > 55) {
+                speed = random(25);
+                points[4].setAttribute('style', 'color: violet');
+            }
+            if(score > 235) {
+                speed = random(30);
+                points[5].setAttribute('style', 'color: violet');
+            }
+            enemies[i].y += speed;
+            if(enemies[i].y > canvas.height) {
+                enemies[i].x = random(canvas.width / 10) * 10;
+                enemies[i].y = 0;
+                score++;
+            }
+            //player-enemy intersection
+            if(ship.intersects(enemies[i])) {
+                gameOver = true;
+            }
+            //enemy spawn
+            while(enemies.length < difficulty) {
+                enemies.push(new Rectangle(random(canvas.width / 10) * 10, 0, 10, 10));
+            }
+        }
+    }
+}
+
+gameMode.paint = function(context) {
+    context.fillStyle = '#201827';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.drawImage(shipImage, ship.x, ship.y);
+
+    for(var i = 0; i < enemies.length; i++) {
+        context.drawImage(enemyImage, enemies[i].x, enemies[i].y);
+    }
+
+    context.fillStyle = '#ff0080a1';
+    context.textAlign = 'left';
+    context.fillText('Score : ' + score, 5, 20);
+
+    if(pause) {
+        context.textAlign = 'center';
+        if(gameOver) {
+            context.fillText('Game Over', 150, 75);
+        } else {
+            context.fillText('Pause', 150, 20);
+        }
+    }
+}
+
+
 window.onload = function() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
     points = document.getElementsByClassName('points');
     emojis = document.getElementsByClassName('emoji');
+    txtSpeed = document.getElementById('speed');
     shipImage.src = 'assets/ship.png';
     shotImage.src = 'assets/shot.png';
     enemyImage.src = 'assets/enemy.png';

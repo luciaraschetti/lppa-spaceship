@@ -68,6 +68,10 @@ h2 {
     color: #ffffffb2;
 }
 
+#speed {
+    display: none;
+}
+
 .emoji {
     display: none;
     margin: 5px 0;
