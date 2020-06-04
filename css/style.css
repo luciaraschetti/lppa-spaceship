@@ -68,6 +68,11 @@ h2 {
     color: #ffffffb2;
 }
 
+#title {
+    display: inline !important;
+    font-size: 1.5rem;
+}
+
 #speed {
     display: none;
 }

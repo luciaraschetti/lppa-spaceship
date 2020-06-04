@@ -5,6 +5,7 @@ var difficulty = 6;
 var points = null;
 var emojis = null;
 var txtSpeed = null;
+var menuTitle = null;
 var game = null;
 var gameMode = null;
 var menu = null;
@@ -29,6 +30,7 @@ var keyDown = 40;
 var keyEnter = 13;
 var keySpace = 32;
 var keyX = 88;
+var keyM = 77;
 
 var random = function(max) {
     return ~~(Math.random() * max);
@@ -124,11 +126,25 @@ menu.paint = function(context) {
 };
 
 menu.act = function() {
+    menuTitle.setAttribute('style', 'display: inline !important');
+    txtSpeed.setAttribute('style', 'display: none');
+    for(var i = 0; i < points.length; i++) {
+        points[i].setAttribute('style', 'display: none');
+        emojis[i].setAttribute('style', 'display: none');
+    }
     if(lastPress === keyEnter) {
+        menuTitle.setAttribute('style', 'display: none !important');
+        txtSpeed.setAttribute('style', 'display: none');
+        points[0].innerHTML = '10';
+        points[1].innerHTML = '30';
+        points[2].innerHTML = '50';
+        points[3].innerHTML = '70';
+        points[4].innerHTML = '150';
         loadScene(game);
         lastPress = null;
     }
     if(lastPress === keyX) {
+        menuTitle.setAttribute('style', 'display: none !important');
         txtSpeed.setAttribute('style', 'display: inline');
         points[0].innerHTML = 'Normal';
         points[1].innerHTML = 'Fast';
@@ -143,6 +159,10 @@ menu.act = function() {
 game = new scene();
 
 game.load = function() {
+    for(var i = 0; i < emojis.length; i++) {
+        emojis[i].setAttribute('style', 'display: none');
+        points[i].setAttribute('style', 'display: inline');
+    }
     score = 0;
     difficulty = 6;
     ship = new Rectangle(145, 130, 16, 15);
@@ -158,6 +178,9 @@ game.act = function() {
     if(lastPress === keyEnter) {
         pause =! pause;
         lastPress = null;
+    }
+    if(lastPress === keyM) {
+        loadScene(menu);
     }
     if(!pause){
         //reset game
@@ -240,6 +263,7 @@ game.paint = function(context) {
         context.textAlign = 'center';
         if(gameOver) {
             context.fillText('Game Over (Press Enter)', 150, 75);
+            context.fillText('Menu (Press M)', 150, 95);
         } else {
             context.fillText('Pause', 150, 20);
         }
@@ -252,10 +276,10 @@ gameMode = new scene();
 gameMode.load = function() {
     score = 0;
     difficulty = 5;
-    points[0].setAttribute('style', 'color: violet');
-    for(var i = 1; i < points.length; i ++) {
-        points[i].setAttribute('style', 'color: #ffffffb2');
+    for(var i = 0; i < points.length; i++) {
+        points[i].setAttribute('style', 'display: inline');
     }
+    points[0].setAttribute('style', 'color: violet');
     ship = new Rectangle(145, 130, 16, 15);
     enemies.length = 0;
     enemies.push(new Rectangle((random(canvas.width / 10) * 10), 0 ,10,10));
@@ -268,6 +292,9 @@ gameMode.act = function() {
     if(lastPress === keyEnter) {
         pause =! pause;
         lastPress = null;
+    }
+    if(lastPress === keyM) {
+        loadScene(menu);
     }
     if(!pause){
         //reset game
@@ -341,6 +368,7 @@ gameMode.paint = function(context) {
         context.textAlign = 'center';
         if(gameOver) {
             context.fillText('Game Over (Press Enter)', 150, 75);
+            context.fillText('Menu (Press M)', 150, 95);
         } else {
             context.fillText('Pause', 150, 20);
         }
@@ -354,6 +382,7 @@ window.onload = function() {
     points = document.getElementsByClassName('points');
     emojis = document.getElementsByClassName('emoji');
     txtSpeed = document.getElementById('speed');
+    menuTitle = document.getElementById('title');
     shipImage.src = 'assets/ship.png';
     shotImage.src = 'assets/shot.png';
     enemyImage.src = 'assets/enemy.png';
